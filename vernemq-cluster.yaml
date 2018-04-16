@@ -1,0 +1,116 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: vernemq
+spec:
+  serviceName: vernemq
+  replicas: 3
+  selector:
+    matchLabels:
+      app: vernemq
+  template:
+    metadata:
+      labels:
+        app: vernemq
+    spec:
+      containers:
+      - name: vernemq
+        image: erlio/docker-vernemq:1.3.1
+        ports:
+        - containerPort: 1883
+          name: mqtt
+        - containerPort: 8883
+          name: mqtts
+        - containerPort: 4369
+          name: epmd
+        - containerPort: 44053
+          name: vmq
+        - containerPort: 9100
+        - containerPort: 9101
+        - containerPort: 9102
+        - containerPort: 9103
+        - containerPort: 9104
+        - containerPort: 9105
+        - containerPort: 9106
+        - containerPort: 9107
+        - containerPort: 9108
+        - containerPort: 9109
+        env:
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: DOCKER_VERNEMQ_DISCOVERY_KUBERNETES
+          value: "1"
+        - name: DOCKER_VERNEMQ_ERLANG__DISTRIBUTION__PORT_RANGE__MINIMUM
+          value: "9100"
+        - name: DOCKER_VERNEMQ_ERLANG__DISTRIBUTION__PORT_RANGE__MAXIMUM
+          value: "9109"
+        - name: DOCKER_VERNEMQ_LISTENER__VMQ__CLUSTERING
+          value: "0.0.0.0:44053"
+        - name: DOCKER_VERNEMQ_LISTENER__SSL__DEFAULT
+          value: "0.0.0.0:8883"
+        - name: DOCKER_VERNEMQ_LISTENER__SSL__CAFILE
+          value: "/etc/ssl/ca.crt"
+        - name: DOCKER_VERNEMQ_LISTENER__SSL__CERTFILE
+          value: "/etc/ssl/server.crt"
+        - name: DOCKER_VERNEMQ_LISTENER__SSL__KEYFILE
+          value: "/etc/ssl/server.key"
+        - name: DOCKER_VERNEMQ_VMQ_PASSWD__PASSWORD_FILE
+          value: "/etc/vernemq-passwd/vmq.passwd"
+        volumeMounts:
+        - mountPath: /etc/ssl
+          name: vernemq-certifications
+          readOnly: true
+        - mountPath: /etc/vernemq-passwd
+          name: vernemq-passwd
+          readOnly: true
+      volumes:
+      - name: vernemq-certifications
+        secret:
+          secretName: vernemq-certifications
+      - name: vernemq-passwd
+        secret:
+          secretName: vernemq-passwd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vernemq
+  labels:
+    app: vernemq
+spec:
+  clusterIP: None
+  selector:
+    app: vernemq
+  ports:
+  - port: 4369
+    name: empd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqtt
+  labels:
+    app: mqtt
+spec:
+  type: ClusterIP
+  selector:
+    app: vernemq
+  ports:
+  - port: 1883
+    name: mqtt
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqtts
+  labels:
+    app: mqtts
+spec:
+  type: LoadBalancer
+  selector:
+    app: vernemq
+  ports:
+  - port: 8883
+    name: mqtts
