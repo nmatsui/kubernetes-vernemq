@@ -104,8 +104,8 @@ A kubernetes configuration yaml to construct VerneMQ Cluster.
 
 ## See also
 
-[VerneMQ](https://vernemq.com/)
-[erlio/docker-vernemq](https://github.com/erlio/docker-vernemq)
+* [VerneMQ](https://vernemq.com/)
+* [erlio/docker-vernemq](https://github.com/erlio/docker-vernemq)
 
 ## License
 
