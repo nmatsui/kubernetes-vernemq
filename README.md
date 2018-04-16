@@ -87,7 +87,7 @@ A kubernetes configuration yaml to construct VerneMQ Cluster.
 
 1. publish message from 'inner' publisher
     * 'inner' publisher publish message to VerneMQ from inside Kubernetes using 1883/tcp (no encrypt)
-    * When 'inner' publisher pulish message, its message push to 'inner' subscriber and 'outer' suscriber
+    * When 'inner' publisher pulish message, its message push back to 'inner' subscriber and 'outer' suscriber
 
     ```text
     $ kubectl run inner-pub --rm -it --image efrecon/mqtt-client /bin/ash
@@ -95,6 +95,8 @@ A kubernetes configuration yaml to construct VerneMQ Cluster.
     ```
 
 1. publish message from 'outer' publisher
+    * 'outer' publisher publish message to VerneMQ through Internet using 8883/tcp (mqtt over tls)
+    * When 'outer' publisher pulish message, its message push back to 'inner' subscriber and 'outer' suscriber
 
     ```text
     $ mosquitto_pub -h <FQDN of VerneMQ's MQTTS endpoint> -p 8883 --cafile ./secrets/ca.crt -t /foo/bar -d -u outer -P <password of 'outer'> -m "Message from outer"
