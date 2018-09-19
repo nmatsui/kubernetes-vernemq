@@ -22,7 +22,7 @@ A kubernetes configuration yaml to construct VerneMQ Cluster.
 1. create self-signed CA
 
     ```bash
-    $ openssl req -new -x509 -days 365 -extensions v3_ca -keyout secrets/ca.key -out secrets/ca.crt
+    $ openssl req -new -x509 -days 365 -keyout secrets/ca.key -out secrets/ca.crt
     ```
 1. create server certificate signed by self-signed CA
     * you have to spacify the FQDN of VerneMQ's MQTTS endpoint
