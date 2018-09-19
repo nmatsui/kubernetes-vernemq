@@ -39,7 +39,7 @@ spec:
         - name: MY_POD_NAME
           valueFrom:
             fieldRef:
-              fieldPath: metadata.name
+              fieldPath: metadata.namespace
         - name: DOCKER_VERNEMQ_DISCOVERY_KUBERNETES
           value: "1"
         - name: DOCKER_VERNEMQ_ERLANG__DISTRIBUTION__PORT_RANGE__MINIMUM
