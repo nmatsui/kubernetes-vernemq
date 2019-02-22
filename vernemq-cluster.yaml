@@ -126,7 +126,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    statefulset.kubernetes.io/pod-name: vernemq-0
+    app: vernemq
   ports:
   - port: 8888
     name: status
