@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: vernemq
-        image: erlio/docker-vernemq:1.3.1
+        image: erlio/docker-vernemq:1.7.0
         ports:
         - containerPort: 1883
           name: mqtt
@@ -25,6 +25,8 @@ spec:
           name: epmd
         - containerPort: 44053
           name: vmq
+        - containerPort: 8888
+          name: status
         - containerPort: 9100
         - containerPort: 9101
         - containerPort: 9102
@@ -114,3 +116,17 @@ spec:
   ports:
   - port: 8883
     name: mqtts
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: status
+  labels:
+    app: status
+spec:
+  type: LoadBalancer
+  selector:
+    statefulset.kubernetes.io/pod-name: vernemq-0
+  ports:
+  - port: 8888
+    name: status
